@@ -2,7 +2,7 @@
 simmer - runs sequenced timers
 
 ## SYNOPSIS
-simmer [-p <PERIODS>] [-y|--cycles <int>] [-x <command>] [-f <command>] [-o <path>] [-c <path>] [-d] [-h|--help]
+`simmer [-p <PERIODS>] [-y|--cycles <int>] [-x <command>] [-f <command>] [-o <path>] [-c <path>] [-d] [-h|--help]`
 
 ## OPTIONS
 `-p <PERIODS>`: list of space-separated times for each period of the timer, of the format `[1m 1h 1s]` 
