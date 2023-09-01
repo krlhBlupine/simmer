@@ -41,14 +41,18 @@ opttest()
 #optargs_true = ("p","y","x","f","o","c") 
 
 # ---timer function---
-def timer(dur, disp, num):
+def timer(dur, disp, num, out=''):
     start_time = (datetime.datetime.now())
     end_time = start_time + dur
     while (datetime.datetime.now() < end_time):
+        remaining = (end_time - (datetime.datetime.now()))
         if disp == True:
-            print((end_time - (datetime.datetime.now())).seconds)
-        time.sleep(1)
+            print(f"{(remaining.days*86400)+remaining.seconds}       ", end='\r')
+        if out != '':
+            print(out)
+        if disp == True or out != '': time.sleep(1)
+        else: time.sleep(remaining.seconds)
     if disp == True:
         print(f"Done with period {num}, {dur}.")
 
-timer(datetime.timedelta(minutes=1, seconds=20), True, 8)
+timer(datetime.timedelta(seconds=30), True, 8)
