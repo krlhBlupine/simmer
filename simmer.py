@@ -2,8 +2,6 @@
 
 import time, datetime, sys, re
 
-start_time = time.time()
-
 opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
 opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
 
@@ -39,5 +37,18 @@ def opttest():
             cmdtest_s(x[1], x[2])
 
 opttest()
-print(optcheck_dict)
+
 #optargs_true = ("p","y","x","f","o","c") 
+
+# ---timer function---
+def timer(dur, disp, num):
+    start_time = (datetime.datetime.now())
+    end_time = start_time + dur
+    while (datetime.datetime.now() < end_time):
+        if disp == True:
+            print((end_time - (datetime.datetime.now())).seconds)
+        time.sleep(1)
+    if disp == True:
+        print(f"Done with period {num}, {dur}.")
+
+timer(datetime.timedelta(minutes=1, seconds=20), True, 8)

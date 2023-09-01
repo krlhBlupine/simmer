@@ -1,9 +1,6 @@
 ## TODO
 
-- Implement a bare timer function.
- - in order to parse how long the timer should last, i need to implement a regex
- - bingo: (\d+)(d|h|m|s)
-- Implement -d switch.
+- Implement -d switch. (Almost done, just need to hook the dict up to the function input.)
 - Implement periods.
 - Implement cycles.
 - Implement execution of functions.
