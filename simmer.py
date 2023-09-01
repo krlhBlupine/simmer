@@ -26,7 +26,7 @@ def cmdtest_s(i, j): #TODO
                 optcheck_dict.update({x: [True, j]})    
         else: raise Exception(f"Unknown option {x}.")
 
-def cmdtest_l(i, j): #TODO
+def cmdtest_l(i, j): #TODO 
     if i in longargs_dict:
         optcheck_dict.update({longargs_dict[i]: [True, j]})
     else: raise Exception(f"Unknown option {i}.")
