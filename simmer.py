@@ -5,7 +5,7 @@ import time, datetime, sys, re
 opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
 opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
 
-optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False,], 'd': [False,], 'h': [False,]}
+optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False, 0], 'd': [False,], 'h': [False,]}
 longargs_dict = {"periods": "p", "cycles": "y", "execute": "x", "finished": "f", "output": "o", "config": "c", "display": "d", "help": "h"}
 # --- option testing ---
 def flagtest(i):
@@ -51,7 +51,7 @@ for x in period_list:
 print(period_list)
 
 # ---timer function---
-def timer(dur, disp, num, out=''):
+def timer(dur, disp, num, cyc=1, out=''):
     start_time = (datetime.datetime.now())
     end_time = start_time + dur
     while (datetime.datetime.now() < end_time):
@@ -63,9 +63,12 @@ def timer(dur, disp, num, out=''):
         if disp == True or out != '': time.sleep(1)
         else: time.sleep(remaining.seconds)
     if disp == True:
-        print(f"Done with period {num}, {dur}.")
+        print(f"Done with period {num}, {cyc}, {dur}.")
 
-p_len=0
-for x in period_list:
-    timer(eval(f"datetime.timedelta({x[1]}={x[0]})"), optcheck_dict["d"][0], p_len)
-    p_len += 1
+c_len=0
+while c_len != optcheck_dict["c"][1]:
+    p_len=0
+    for x in period_list:
+        timer(eval(f"datetime.timedelta({x[1]}={x[0]})"), optcheck_dict["d"][0], p_len)
+        p_len += 1
+    c_len += 1
