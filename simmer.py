@@ -1,5 +1,5 @@
 #! usr/bin/python3
-
+# --- root ---
 import time, datetime, sys, re
 
 opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
@@ -7,7 +7,7 @@ opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selec
 
 optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False,], 'd': [False,], 'h': [False,]}
 longargs_dict = {"periods": "p", "cycles": "y", "execute": "x", "finished": "f", "output": "o", "config": "c", "display": "d", "help": "h"}
-
+# --- option testing ---
 def flagtest(i):
     if i == "--":
         return 1
@@ -37,8 +37,18 @@ def opttest():
             cmdtest_s(x[1], x[2])
 
 opttest()
-
 #optargs_true = ("p","y","x","f","o","c") 
+
+# --- argument eval ---
+period_reg = re.compile("(\d*)([d|h|m|s])")
+period_tup = re.findall(period_reg, optcheck_dict["p"][1])
+span_dict = {'d': 'days', 'h': 'hours','m': 'minutes','s': 'seconds'}
+period_list = [list(ele) for ele in period_tup]
+
+for x in period_list:
+    if x[1] in span_dict:
+     x[1] = span_dict[x[1]]   
+print(period_list)
 
 # ---timer function---
 def timer(dur, disp, num, out=''):
@@ -55,4 +65,7 @@ def timer(dur, disp, num, out=''):
     if disp == True:
         print(f"Done with period {num}, {dur}.")
 
-timer(datetime.timedelta(seconds=30), True, 8)
+p_len=0
+for x in period_list:
+    timer(eval(f"datetime.timedelta({x[1]}={x[0]})"), optcheck_dict["d"][0], p_len)
+    p_len += 1
