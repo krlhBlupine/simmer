@@ -48,7 +48,6 @@ period_list = [list(ele) for ele in period_tup]
 for x in period_list:
     if x[1] in span_dict:
      x[1] = span_dict[x[1]]   
-print(period_list)
 
 # ---timer function---
 def timer(dur, disp, num, cyc=0, out=''):
