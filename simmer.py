@@ -1,6 +1,6 @@
 #! usr/bin/python3
 # --- root ---
-import time, datetime, sys, re
+import time, datetime, sys, re, subprocess
 
 opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
 opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
@@ -41,7 +41,6 @@ optparse()
 # --- argument eval ---
 period_reg = "(\d*)([d|h|m|s])"
 period_tup = re.findall(period_reg, optcheck_dict["p"][1])
-print(period_tup)
 
 span_dict = {'d': 'days', 'h': 'hours','m': 'minutes','s': 'seconds'}
 period_list = [list(ele) for ele in period_tup]
@@ -49,6 +48,11 @@ period_list = [list(ele) for ele in period_tup]
 for x in period_list:
     if x[1] in span_dict:
      x[1] = span_dict[x[1]]   
+
+# ---exec---
+def exec(which):
+    if optcheck_dict[which][0] == True:
+        subprocess.Popen(optcheck_dict[which][1].split(" ")) 
 
 # ---timer function---
 def timer(dur, disp, num, cyc=0, out=''):
@@ -68,7 +72,11 @@ def timer(dur, disp, num, cyc=0, out=''):
 c_len=0
 while c_len < int(optcheck_dict["c"][1]):
     p_len=0
-    for x in period_list:
-        timer(eval(f"datetime.timedelta({x[1]}={x[0]})"), optcheck_dict["d"][0], p_len, c_len)
+    for i in period_list:
+        timer(eval(f"datetime.timedelta({i[1]}={i[0]})"), optcheck_dict["d"][0], p_len, c_len)
         p_len += 1
+        if p_len < len(period_list): exec("x")
     c_len += 1
+    exec("f")
+
+# ---
