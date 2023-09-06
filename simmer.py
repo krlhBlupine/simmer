@@ -5,7 +5,7 @@ import time, datetime, sys, re
 opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
 opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
 
-optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False, 0], 'd': [False,], 'h': [False,]}
+optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False, 1], 'd': [False,], 'h': [False,]}
 longargs_dict = {"periods": "p", "cycles": "y", "execute": "x", "finished": "f", "output": "o", "config": "c", "display": "d", "help": "h"}
 # --- option testing ---
 def flagtest(i):
@@ -29,19 +29,20 @@ def cmdtest_l(i, j): #TODO
         optcheck_dict.update({longargs_dict[i]: [True, j]})
     else: raise Exception(f"Unknown option {i}.")
 
-def opttest():
+def optparse():
     for x in opts_list:
         if flagtest(x[0]):
             cmdtest_l(x[1], x[2])
         else:
             cmdtest_s(x[1], x[2])
 
-opttest()
-#optargs_true = ("p","y","x","f","o","c") 
+optparse()
 
 # --- argument eval ---
-period_reg = re.compile("(\d*)([d|h|m|s])")
+period_reg = "(\d*)([d|h|m|s])"
 period_tup = re.findall(period_reg, optcheck_dict["p"][1])
+print(period_tup)
+
 span_dict = {'d': 'days', 'h': 'hours','m': 'minutes','s': 'seconds'}
 period_list = [list(ele) for ele in period_tup]
 
