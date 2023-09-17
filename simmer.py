@@ -1,11 +1,11 @@
 #! usr/bin/python3
 # --- root ---
-import time, datetime, sys, re
+import time, datetime, sys, re, subprocess
 
 opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
 opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
 
-optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False, 0], 'd': [False,], 'h': [False,]}
+optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False, 1], 'd': [False,], 'h': [False,]}
 longargs_dict = {"periods": "p", "cycles": "y", "execute": "x", "finished": "f", "output": "o", "config": "c", "display": "d", "help": "h"}
 # --- option testing ---
 def flagtest(i):
@@ -29,25 +29,33 @@ def cmdtest_l(i, j): #TODO
         optcheck_dict.update({longargs_dict[i]: [True, j]})
     else: raise Exception(f"Unknown option {i}.")
 
-def opttest():
+def optparse():
     for x in opts_list:
         if flagtest(x[0]):
             cmdtest_l(x[1], x[2])
         else:
             cmdtest_s(x[1], x[2])
 
-opttest()
-#optargs_true = ("p","y","x","f","o","c") 
+optparse()
 
 # --- argument eval ---
-period_reg = re.compile("(\d*)([d|h|m|s])")
+period_reg = "(\d*)([d|h|m|s])"
 period_tup = re.findall(period_reg, optcheck_dict["p"][1])
+
 span_dict = {'d': 'days', 'h': 'hours','m': 'minutes','s': 'seconds'}
 period_list = [list(ele) for ele in period_tup]
 
 for x in period_list:
     if x[1] in span_dict:
      x[1] = span_dict[x[1]]   
+
+# ---exec---
+def exec(which):
+    if optcheck_dict[which][0] == True:
+        p = subprocess.Popen(optcheck_dict[which][1].split(" "), stdout=subprocess.PIPE)
+        while p.poll() is None:
+            l = p.stdout.readline()
+            print(l.decode("utf-8"))
 
 # ---timer function---
 def timer(dur, disp, num, cyc=0, out=''):
@@ -67,7 +75,11 @@ def timer(dur, disp, num, cyc=0, out=''):
 c_len=0
 while c_len < int(optcheck_dict["c"][1]):
     p_len=0
-    for x in period_list:
-        timer(eval(f"datetime.timedelta({x[1]}={x[0]})"), optcheck_dict["d"][0], p_len, c_len)
+    for i in period_list:
+        timer(eval(f"datetime.timedelta({i[1]}={i[0]})"), optcheck_dict["d"][0], p_len, c_len)
         p_len += 1
+        if p_len < len(period_list) or len(period_list) == 1: exec("x")
     c_len += 1
+    exec("f")
+
+# ---
