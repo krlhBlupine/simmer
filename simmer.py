@@ -56,10 +56,12 @@ for x in period_list:
 # ---exec---
 def exec(which):
     if optcheck_dict[which][0] == True:
-        p = subprocess.Popen(optcheck_dict[which][1].split(" "), stdout=subprocess.PIPE)
-        while p.poll() is None:
-            l = p.stdout.readline()
-            print(l.decode("utf-8"))
+        if optcheck_dict['d'][0] == True:
+            p = subprocess.Popen(optcheck_dict[which][1].split(" "), stdout=subprocess.PIPE)
+            while p.poll() is None:
+                l = p.stdout.readline()
+                print(l.decode("utf-8"))
+        else: p = subprocess.Popen(optcheck_dict[which][1].split(" "))
 
 # ---timer function---
 def timer(dur, disp, num, cyc=0, out=''):
