@@ -5,8 +5,8 @@ import time, datetime, sys, re, subprocess
 # opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
 # opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
 
-optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False, 1], 'd': [False,], 'h': [False,]}
-longargs_dict = {"periods": "p", "cycles": "y", "execute": "x", "finished": "f", "output": "o", "config": "c", "display": "d", "help": "h"}
+optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False, 1], 'd': [False,], 'h': [False,], 'b':[False,]}
+longargs_dict = {"periods": "p", "cycles": "y", "execute": "x", "finished": "f", "output": "o", "config": "c", "display": "d", "help": "h", "execboth": "b"}
 # --- option testing ---
 reg = ''
 def arghandle():
@@ -84,7 +84,9 @@ while c_len < int(optcheck_dict["c"][1]):
     for i in period_list:
         timer(eval(f"datetime.timedelta({i[1]}={i[0]})"), optcheck_dict["d"][0], p_len, c_len)
         p_len += 1
-        if p_len < len(period_list) or len(period_list) == 1: exec("x")
+        if optcheck_dict['b'][0] == False:
+            if p_len < len(period_list) or len(period_list) == 1: exec("x")
+        else: exec("x")
     c_len += 1
     exec("f")
 
