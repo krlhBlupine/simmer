@@ -5,8 +5,8 @@ import time, datetime, sys, re, subprocess
 # opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
 # opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
 
-optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False, 1], 'd': [False,], 'h': [False,], 'b':[False,]}
-longargs_dict = {"periods": "p", "cycles": "y", "execute": "x", "finished": "f", "output": "o", "config": "c", "display": "d", "help": "h", "execboth": "b"}
+optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 's': [False,], 'o': [False,], 'c': [False, 1], 'd': [False,], 'h': [False,], 'b':[False,], 't':[False,]}
+longargs_dict = {"periods": "p", "cycles": "y", "execute": "x", "finishcyc": "f", "finishsim": "s", "output": "o", "config": "c", "display": "d", "help": "h", "execboth": "b", "cmdout": "t"}
 # --- option testing ---
 reg = ''
 def arghandle():
@@ -56,12 +56,9 @@ for x in period_list:
 # ---exec---
 def exec(which):
     if optcheck_dict[which][0] == True:
-        if optcheck_dict['d'][0] == True:
-            p = subprocess.Popen(optcheck_dict[which][1].split(" "), stdout=subprocess.PIPE)
-            while p.poll() is None:
-                l = p.stdout.readline()
-                print(l.decode("utf-8"))
-        else: p = subprocess.Popen(optcheck_dict[which][1].split(" "))
+        if optcheck_dict['t'][0] == True:
+            p = subprocess.Popen(optcheck_dict[which][1].split(" "))
+        else: p = subprocess.Popen(optcheck_dict[which][1].split(" "), stdout=subprocess.DEVNULL)
 
 # ---timer function---
 def timer(dur, disp, num, cyc=0, out=''):
@@ -89,5 +86,5 @@ while c_len < int(optcheck_dict["c"][1]):
         else: exec("x")
     c_len += 1
     exec("f")
-
+exec('s')
 # ---
