@@ -2,42 +2,46 @@
 # --- root ---
 import time, datetime, sys, re, subprocess
 
-opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
-opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
+# opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
+# opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
 
 optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 'o': [False,], 'c': [False, 1], 'd': [False,], 'h': [False,]}
 longargs_dict = {"periods": "p", "cycles": "y", "execute": "x", "finished": "f", "output": "o", "config": "c", "display": "d", "help": "h"}
 # --- option testing ---
-def flagtest(i):
-    if i == "--":
-        return 1
-    elif i == "-":
-        return 0
-    else:
-        raise Exception("Options must always be marked with '-', or '--' for their long counterparts.")
+reg = ''
+def arghandle():
+    global reg
+    for i in sys.argv[1:]:
+        m = re.search(r"^(-|--)(\w+)$", i)
+        if m and m.groups()[0] == "-":
+                arg_s(m.groups()[1])
+        elif m and m.groups()[0] == "--":
+                arg_l(m.groups()[1])
+        elif not reg == '':
+                arg_ap(i)
+        else: print(f"Unknown option {i}. Did you forget a flag?")
 
-def cmdtest_s(i, j): #TODO
-    for x in i:
+def arg_s(options):
+    global reg
+    for x in options:
         if str(x) in optcheck_dict:
             optcheck_dict.update({x: [True,]})
-            if x == i[-1]:
-                optcheck_dict.update({x: [True, j]})    
-        else: raise Exception(f"Unknown option {x}.")
+            if x == options[-1]: reg = x
+        else: print(f"Unknown option -{x}") 
 
-def cmdtest_l(i, j): #TODO 
-    if i in longargs_dict:
-        optcheck_dict.update({longargs_dict[i]: [True, j]})
-    else: raise Exception(f"Unknown option {i}.")
+def arg_l(option):
+    global reg
+    if option in longargs_dict:
+        optcheck_dict.update({longargs_dict[option]: [True,]})
+        reg = longargs_dict[option]
+    else: print(f"Unknown option --{option}") 
 
-def optparse():
-    for x in opts_list:
-        if flagtest(x[0]):
-            cmdtest_l(x[1], x[2])
-        else:
-            cmdtest_s(x[1], x[2])
+def arg_ap(argument):
+    global reg
+    if reg in optcheck_dict:
+        optcheck_dict[reg].append(argument)
 
-optparse()
-
+arghandle()
 # --- argument eval ---
 period_reg = "(\d*)([d|h|m|s])"
 period_tup = re.findall(period_reg, optcheck_dict["p"][1])
