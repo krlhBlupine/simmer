@@ -1,7 +1,8 @@
 ## TODO
 
-**- REWRITE OPTION HANDLING, DUMBASS**
-    - you forgot that you have to distinguish between arguments in the excecuted command and arguments for the program, huh
+- Option handling rewritten, now I need to figure out how to pass sub-arguments
+- Also need to do some execption handling.
+- And in the end update the readme so everything is explained.
 
 - Implement file output.
 - Implement reading from a config file. (json?? unclear, find out more.)
