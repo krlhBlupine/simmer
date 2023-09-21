@@ -2,11 +2,34 @@
 # --- root ---
 import time, datetime, sys, re, subprocess, shlex
 
-# opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
-# opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
+optcheck_dict = {
+ 'p': [False,],
+ 'y': [False, 1],
+ 'x': [False,],
+ 'f': [False,],
+ 'F': [False,],
+ 's': [False,],
+ 'o': [False,],
+ 'c': [False,],
+ 'd': [False,],
+ 'h': [False,],
+ 'b': [False,],
+ 't': [False,]}
 
-optcheck_dict = {'p': [False,], 'y': [False,], 'x': [False,], 'f': [False,], 's': [False,], 'o': [False,], 'c': [False, 1], 'd': [False,], 'h': [False,], 'b':[False,], 't':[False,]}
-longargs_dict = {"periods": "p", "cycles": "y", "execute": "x", "finishcyc": "f", "finishsim": "s", "output": "o", "config": "c", "display": "d", "help": "h", "execboth": "b", "cmdout": "t"}
+longargs_dict = {
+ "periods":   "p",
+ "cycles":    "y",
+ "execute":   "x",
+ "finishcyc": "f",
+ "finally":   "F",
+ "stats":     "s", 
+ "output":    "o", 
+ "config":    "c", 
+ "display":   "d", 
+ "help":      "h", 
+ "execboth":  "b", 
+ "cmdout":    "t"}
+
 # --- option testing ---
 reg = ''
 def arghandle():
@@ -77,15 +100,18 @@ def timer(dur, disp, stats, num, cyc=0, out=''):
         print(f"Done with period {num}, cycle {cyc}, {dur}.")
 
 c_len=0
-while c_len < int(optcheck_dict["c"][1]):
+while c_len < int(optcheck_dict["y"][1]):
     p_len=0
     for i in period_list:
-        timer(eval(f"datetime.timedelta({i[1]}={i[0]})"), optcheck_dict["d"][0], optcheck_dict["o"][0], p_len, c_len)
+        timer(eval(f"datetime.timedelta({i[1]}={i[0]})"), 
+        optcheck_dict["d"][0], 
+        optcheck_dict["s"][0], 
+        p_len, c_len)
         p_len += 1
         if optcheck_dict['b'][0] == False:
             if p_len < len(period_list) or len(period_list) == 1: exec("x")
         else: exec('x')
     c_len += 1
     exec('f')
-exec('s')
+exec('F')
 # ---
