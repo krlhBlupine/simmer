@@ -1,6 +1,6 @@
 #! usr/bin/python3
 # --- root ---
-import time, datetime, sys, re, subprocess
+import time, datetime, sys, re, subprocess, shlex
 
 # opts_reg = re.compile(r"(-{,2})(\w+)(?: )?([^-\r\n]*\b[!-/:-@[-`{-~]?)") #TODO if " " raise, if "-" "o"[-1], if "--" dict?
 # opts_list = re.findall(opts_reg, (" ".join(sys.argv[1:]))) #Group 1 is the selector, g2 is the flag, g3 is any argument
@@ -56,12 +56,13 @@ for x in period_list:
 # ---exec---
 def exec(which):
     if optcheck_dict[which][0] == True:
+        x = shlex.split(optcheck_dict[which][1])
         if optcheck_dict['t'][0] == True:
-            p = subprocess.Popen(optcheck_dict[which][1].split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        else: p = subprocess.Popen(optcheck_dict[which][1].split(" "), stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+            p = subprocess.Popen(x, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        else: p = subprocess.Popen(x, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
 
 # ---timer function---
-def timer(dur, disp, num, cyc=0, out=''):
+def timer(dur, disp, stats, num, cyc=0, out=''):
     start_time = (datetime.datetime.now())
     end_time = start_time + dur
     while (datetime.datetime.now() < end_time):
@@ -72,14 +73,14 @@ def timer(dur, disp, num, cyc=0, out=''):
             print(out)
         if disp == True or out != '': time.sleep(1)
         else: time.sleep(remaining.seconds)
-    if disp == True:
+    if stats == True:
         print(f"Done with period {num}, cycle {cyc}, {dur}.")
 
 c_len=0
 while c_len < int(optcheck_dict["c"][1]):
     p_len=0
     for i in period_list:
-        timer(eval(f"datetime.timedelta({i[1]}={i[0]})"), optcheck_dict["d"][0], p_len, c_len)
+        timer(eval(f"datetime.timedelta({i[1]}={i[0]})"), optcheck_dict["d"][0], optcheck_dict["o"][0], p_len, c_len)
         p_len += 1
         if optcheck_dict['b'][0] == False:
             if p_len < len(period_list) or len(period_list) == 1: exec("x")
