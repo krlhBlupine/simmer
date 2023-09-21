@@ -57,8 +57,8 @@ for x in period_list:
 def exec(which):
     if optcheck_dict[which][0] == True:
         if optcheck_dict['t'][0] == True:
-            p = subprocess.Popen(optcheck_dict[which][1].split(" "))
-        else: p = subprocess.Popen(optcheck_dict[which][1].split(" "), stdout=subprocess.DEVNULL)
+            p = subprocess.Popen(optcheck_dict[which][1].split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        else: p = subprocess.Popen(optcheck_dict[which][1].split(" "), stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
 
 # ---timer function---
 def timer(dur, disp, num, cyc=0, out=''):
@@ -83,8 +83,8 @@ while c_len < int(optcheck_dict["c"][1]):
         p_len += 1
         if optcheck_dict['b'][0] == False:
             if p_len < len(period_list) or len(period_list) == 1: exec("x")
-        else: exec("x")
+        else: exec('x')
     c_len += 1
-    exec("f")
+    exec('f')
 exec('s')
 # ---
