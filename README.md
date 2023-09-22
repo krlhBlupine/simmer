@@ -25,9 +25,9 @@ simmer - runs sequenced timers
 `-F|--finally <command>`: a command simmer will run at the end of all cycles.
     Format as `-x`.
 
-`-o|--output <path>`: a path to a file where simmer will write the time remaining.*
+`-o|--output <path>`: a path to a file where simmer will write the time remaining.^*
 
-`-c|--config <path>`: a path to a config file with more granular period and command instructions.*
+`-c|--config <path>`: a path to a config file with more granular period and command instructions.^*
 
 `-s|--stats`: Prints statistics such as period number and cycle number to the console at the end of each period.
 
@@ -35,6 +35,6 @@ simmer - runs sequenced timers
 
 `-t|--cmdout`: Pipes the output of any commands executed to the console.
 
-`-h|--help`: displays help.*
+`-h|--help`: displays help.^*
 
 ^* not yet implemented
