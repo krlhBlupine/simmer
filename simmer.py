@@ -66,7 +66,7 @@ try:
 except:
     print("Unknown option.")
     print("Usage: simmer [-p <PERIODS>] [-y|--cycles <int>] [-x <command>]")
-    print("See --help for more details.")
+    print("See --help for more options.")
     exit()
 
 a = False
