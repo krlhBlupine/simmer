@@ -3,32 +3,25 @@
 import time, datetime, sys, re, subprocess, shlex
 
 optcheck_dict = {
- 'p': [False, ],
- 'y': [False,1],
- 'x': [False, ],
- 'f': [False, ],
- 'F': [False, ],
- 's': [False, ],
- 'o': [False, ],
- 'c': [False, ],
- 'd': [False, ],
- 'h': [False, ],
- 'b': [False, ],
- 't': [False, ]}
+ 'p': [False,''], 'y': [False,1 ], 'N': [False,  ],
+ 'x': [False,''], 'f': [False,''],
+ 'F': [False,''], 's': [False,  ],
+ 'o': [False,''], 'c': [False,''],
+ 'd': [False,  ], 'h': [False,  ],
+ 'b': [False,  ], 't': [False,  ]}
 
 longargs_dict = {
- "periods":   "p",
- "cycles":    "y",
- "execute":   "x",
- "finishcyc": "f",
- "finally":   "F",
- "stats":     "s", 
- "output":    "o", 
- "config":    "c", 
- "display":   "d", 
- "help":      "h", 
- "execboth":  "b", 
- "cmdout":    "t"}
+ "periods":   "p", "cycles":    "y", "nowait":   "N",
+ "execute":   "x", "finishcyc": "f",
+ "finally":   "F", "stats":     "s", 
+ "output":    "o", "config":    "c", 
+ "display":   "d", "help":      "h", 
+ "execboth":  "b", "cmdout":    "t"}
+
+flag_list = []
+for i in optcheck_dict:
+    if len(optcheck_dict[i]) == 1:
+        flag_list.append(i)
 
 # --- option testing ---
 reg = ''
@@ -42,7 +35,7 @@ def arghandle():
                 arg_l(m.groups()[1])
         elif not reg == '':
                 arg_ap(i)
-        else: raise Exception(f"Unknown option {i}. Did you forget a flag?")
+        else: raise Exception('NoFlag')
 
 def arg_s(options):
     global reg
@@ -68,23 +61,35 @@ try:
     arghandle()
     period_reg = "(\d*)(\w)"
     period_tup = re.findall(period_reg, optcheck_dict["p"][1])
-
     span_dict = {'d': 'days', '': 'hours','m': 'minutes','s': 'seconds'}
     period_list = [list(ele) for ele in period_tup]
 except:
     print("Unknown option.")
     print("Usage: simmer [-p <PERIODS>] [-y|--cycles <int>] [-x <command>]")
+    print("See --help for more details.")
     exit()
-# --- argument eval ---
 
 try:
-    for x in period_list:
+    for i in flag_list:
+        if len(optcheck_dict[i]) == 1:
+            pass
+        else: raise Exception(f"Flag -{i} supplied with unnecessary data.")
+except: print(f"Flag -{i} supplied with unnecessary data.") ; exit()
+# --- argument eval ---
+
+for x in period_list:
+    try:
         if x[1] in span_dict:
             x[1] = span_dict[x[1]]
-        else: raise Exception("Unknown period length.")    
-except: 
-    print("Unkown period length. Options are: d (days), h (hours), m (minutes), s (seconds).")
-    exit()
+        else: raise Exception 
+    except: 
+        print("Unknown period length. Options are: d (days), h (hours), m (minutes), s (seconds).")
+        exit()
+    try: 
+        if x[0] == '': raise Exception   
+    except:
+        print("Missing period duration.") 
+        exit()
 
 try:
     optcheck_dict['y'][1] = int(optcheck_dict['y'][1])
@@ -99,8 +104,9 @@ def exec(which):
         if optcheck_dict[which][0] == True:
             x = shlex.split(optcheck_dict[which][1])
             if optcheck_dict['t'][0] == True:
-                p = subprocess.Popen(x, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen(x, stderr=subprocess.PIPE)
             else: p = subprocess.Popen(x, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+            if optcheck_dict['N'][0] == False: p.wait()
     except FileNotFoundError:
         print(f'{which}: No command ({" ".join(x)}), found.')
         exit() 
@@ -135,6 +141,7 @@ try:
             else: exec('x')
         c_len += 1
         exec('f')
-except SyntaxError: print("Missing period length.")
+except KeyboardInterrupt: print("\nCaught term signal, exiting.") ; exit()
+except: print('Timer failed.') ; exit()
 exec('F')
 # ---
