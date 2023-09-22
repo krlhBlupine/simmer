@@ -3,18 +3,18 @@
 import time, datetime, sys, re, subprocess, shlex
 
 optcheck_dict = {
- 'p': [False,],
- 'y': [False, 1],
- 'x': [False,],
- 'f': [False,],
- 'F': [False,],
- 's': [False,],
- 'o': [False,],
- 'c': [False,],
- 'd': [False,],
- 'h': [False,],
- 'b': [False,],
- 't': [False,]}
+ 'p': [False, ],
+ 'y': [False,1],
+ 'x': [False, ],
+ 'f': [False, ],
+ 'F': [False, ],
+ 's': [False, ],
+ 'o': [False, ],
+ 'c': [False, ],
+ 'd': [False, ],
+ 'h': [False, ],
+ 'b': [False, ],
+ 't': [False, ]}
 
 longargs_dict = {
  "periods":   "p",
