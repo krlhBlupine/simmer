@@ -69,6 +69,14 @@ except:
     print("See --help for more details.")
     exit()
 
+a = False
+try:
+    for i in optcheck_dict:
+        if optcheck_dict[i][0] == True:
+            a = True
+    if a == False: raise Exception
+except: print("No options specified! See --help for usage.") ; exit()
+
 try:
     for i in flag_list:
         if len(optcheck_dict[i]) == 1:
