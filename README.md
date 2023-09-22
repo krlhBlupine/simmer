@@ -12,11 +12,14 @@ simmer - runs sequenced timers
 
 `-x|--execute <command>`: a command simmer will execute with each finished period.
     Format as `"<foo> -b ar -f 'Foo Bar'"`, with all arguments contained within a single string.
-    *See also `--execboth`.*
+    *See also `--execboth`, `--nowait`.*
 
 `-f|--finishcyc <command>`: a command simmer will execute with each finished cycle.
     Format as `-x`.
     *See also `--execboth`.*
+
+`-N|--nowait`: simmer's default behavior is to wait until all commands have completed before 
+    continuing to the next period. Pass this flag to disble this behavior.
 
 `-b|--execboth <command>`: Overrides command replacement at the end of a cycle.
     The `-x` and `-f` flags' default behavior is that one overrides the other. At the end of a cycle,
